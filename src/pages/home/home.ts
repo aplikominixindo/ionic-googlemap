@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { NavController } from 'ionic-angular';
+import { NavController, Platform } from 'ionic-angular';
 import { GoogleMaps, GoogleMap } from '@ionic-native/google-maps';
 import { ViewChild, ElementRef } from '@angular/core';
 import {
@@ -18,15 +18,24 @@ import { mapStyle } from './mapStyle';
 export class HomePage {
 
   @ViewChild('map') mapElement: ElementRef;
-  map: GoogleMap;
+  private map: GoogleMap;
 
   constructor(public navCtrl: NavController,
+    public platform: Platform,
     private _googleMaps: GoogleMaps,
     private _geoLoc: Geolocation) {
+      platform.ready().then(() => {
+        this.initMap();
+      });
+  }
+
+  // open google maps
+  openMaps(){
+    this.navCtrl.push('GooglemapsPage');
   }
 
   // buka map setelah tampilan diinisialisasi
-  ngAfterViewInit() {
+  ionViewDidLoad() {
     let loc: LatLng;
     // inisialisasi map
     this.initMap();
@@ -72,7 +81,9 @@ export class HomePage {
   createMarker(loc: LatLng, keterangan: string) {
     let markerOptions: MarkerOptions = {
       position: loc,
-      title: keterangan
+      title: keterangan,
+      icon: 'blue',
+      animation: 'DROP'
     };
     return this.map.addMarker(markerOptions);
   }
