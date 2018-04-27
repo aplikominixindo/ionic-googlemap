@@ -9,6 +9,7 @@ import {
   Marker, MarkerOptions
 } from '@ionic-native/google-maps';
 import { Geolocation } from '@ionic-native/geolocation';
+import { mapStyle } from './mapStyle';
 
 @Component({
   selector: 'page-home',
@@ -68,7 +69,7 @@ export class HomePage {
   }
 
   // membuat marker google map
-  createMarker(loc: LatLng, keterangan: string){
+  createMarker(loc: LatLng, keterangan: string) {
     let markerOptions: MarkerOptions = {
       position: loc,
       title: keterangan
@@ -95,8 +96,22 @@ export class HomePage {
   // membuka map
   initMap() {
     let element = this.mapElement.nativeElement;
-    //this.map = this._googleMaps.create(element);
-    this.map = GoogleMaps.create(element);
+    let time = new Date().getHours();
+    let style = [];
+
+    // ubah style menjadi mode malam diantara pk. 19 sampai pk. 5
+    if (this.isNight()) {
+      style = mapStyle;
+    }
+
+    //this.map = this._googleMaps.create(element);// deprecated
+    this.map = GoogleMaps.create(element, { styles: [] });
+  }
+
+  // jika mode malam
+  isNight() {
+    let time = new Date().getHours();
+    return (time > 5 && time < 19) ? false : true;
   }
 
 }
